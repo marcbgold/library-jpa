@@ -2,51 +2,47 @@ package org.wecancodeit.libraryjpa;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 @Entity
-public class Book {
+public class Author {
 
 	@Id
 	@GeneratedValue
 	private long id;
+	private String firstName;
+	private String lastName;
 
-	@ManyToOne
-	private Genre genre;
-	private String title;
+	@ManyToMany(mappedBy = "authors")
+	private Collection<Book> books;
 
-	@ManyToMany
-	private Collection<Author> authors;
-
-	public Book() {
+	public Author() {
 	}
 
-	public Book(Genre genre, String title, Author... authors) {
-		this.genre = genre;
-		this.title = title;
-		this.authors = new HashSet<>(Arrays.asList(authors));
+	public Author(String firstName, String lastName, Book... books) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.books = Arrays.asList(books);
 	}
 
 	public long getId() {
 		return id;
 	}
 
-	public Genre getGenre() {
-		return genre;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public Collection<Author> getAuthors() {
-		return authors;
+	public Collection<Book> getBooks() {
+		return books;
 	}
 
 	@Override
@@ -64,7 +60,7 @@ public class Book {
 			return false;
 		}
 
-		return id == ((Book) obj).id;
+		return id == ((Author) obj).id;
 	}
 
 }

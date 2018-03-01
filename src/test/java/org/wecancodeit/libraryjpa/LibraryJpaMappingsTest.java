@@ -25,8 +25,8 @@ public class LibraryJpaMappingsTest {
 	@Resource
 	private BookRepository bookRepo;
 
-	// @Resource
-	// private AuthorRepository authorRepo;
+	@Resource
+	private AuthorRepository authorRepo;
 
 	@Test
 	public void shouldSaveAndLoadCourse() {
@@ -59,62 +59,45 @@ public class LibraryJpaMappingsTest {
 		assertThat(genre.getBooks(), containsInAnyOrder(first, second));
 	}
 
-	// @Test
-	// public void shouldSaveAndLoadTopic() {
-	// Topic topic = topicRepo.save(new Topic("its name"));
-	// long topicId = topic.getId();
-	//
-	// entityManager.flush(); // forces jpa to hit the db when we try to find it
-	// entityManager.clear();
-	//
-	// topic = topicRepo.findOne(topicId);
-	// assertThat(topic.getName(), is("its name"));
-	// }
-	//
-	// @Test
-	// public void shouldGenerateTopicId() {
-	// Topic topic = topicRepo.save(new Topic("its name"));
-	// long topicId = topic.getId();
-	//
-	// entityManager.flush(); // forces jpa to hit the db when we try to find it
-	//
-	// assertThat(topicId, is(greaterThan(0L)));
-	// }
-	//
-	// @Test
-	// public void shouldEstablishCourseToTopicsRelationships() {
-	// // topic is not the owner, so we save these first
-	// Topic java = topicRepo.save(new Topic("Java"));
-	// Topic ruby = topicRepo.save(new Topic("Ruby"));
-	//
-	// Course course = new Course("OO Languages", java, ruby);
-	// course = courseRepo.save(course);
-	// long ooLanguagesId = course.getId();
-	//
-	// entityManager.flush();
-	// entityManager.clear();
-	//
-	// course = courseRepo.findOne(ooLanguagesId);
-	// assertThat(course.getTopics(), containsInAnyOrder(java, ruby));
-	//
-	// }
-	//
-	// @Test
-	// public void shouldEstablishTopicToCoursesRelationship() {
-	// Topic topic = topicRepo.save(new Topic("Ruby"));
-	// long topicId = topic.getId();
-	//
-	// Course ooLanguages = new Course("OO Languages", topic);
-	// ooLanguages = courseRepo.save(ooLanguages);
-	//
-	// Course scriptingLanguages = new Course("Scripting Languages", topic);
-	// scriptingLanguages = courseRepo.save(scriptingLanguages);
-	//
-	// entityManager.flush();
-	// entityManager.clear();
-	//
-	// topic = topicRepo.findOne(topicId);
-	// assertThat(topic.getCourses(), containsInAnyOrder(ooLanguages,
-	// scriptingLanguages));
-	// }
+	@Test
+	public void shouldSaveAndLoadAuthor() {
+		Author underTest = authorRepo.save(new Author("first", "last"));
+		long AuthorId = underTest.getId();
+
+		entityManager.flush();
+		entityManager.clear();
+
+		underTest = authorRepo.findOne(AuthorId);
+		assertThat(underTest.getFirstName(), is("first"));
+	}
+
+	@Test
+	public void shouldEstablishAuthorsToBooksRelationship() {
+		Genre genre = genreRepo.save(new Genre("test"));
+		Author firstAuthor = authorRepo.save(new Author("first", "last"));
+		Author secondAuthor = authorRepo.save(new Author("first", "last"));
+		Book book = bookRepo.save(new Book(genre, "Java", firstAuthor, secondAuthor));
+		long bookId = book.getId();
+
+		entityManager.flush();
+		entityManager.clear();
+
+		book = bookRepo.findOne(bookId);
+		assertThat(book.getAuthors(), containsInAnyOrder(firstAuthor, secondAuthor));
+	}
+
+	@Test
+	public void shouldEstablishBooksToAuthorsRelationship() {
+		Genre genre = genreRepo.save(new Genre("test"));
+		Author author = authorRepo.save(new Author("first", "last"));
+		Book firstBook = bookRepo.save(new Book(genre, "Java", author));
+		Book secondBook = bookRepo.save(new Book(genre, "Ruby", author));
+		long authorId = author.getId();
+
+		entityManager.flush();
+		entityManager.clear();
+
+		author = authorRepo.findOne(authorId);
+		assertThat(author.getBooks(), containsInAnyOrder(firstBook, secondBook));
+	}
 }

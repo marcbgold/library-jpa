@@ -14,14 +14,19 @@ public class LibraryPopulator implements CommandLineRunner {
 	@Resource
 	private BookRepository bookRepo;
 
+	@Resource
+	private AuthorRepository authorRepo;
+
 	@Override
 	public void run(String... args) throws Exception {
-		Genre fiction = new Genre("Fiction");
-		fiction = genreRepo.save(fiction);
+		Genre fiction = genreRepo.save(new Genre("Fiction"));
 		Genre nonfiction = genreRepo.save(new Genre("Nonfiction"));
 
-		bookRepo.save(new Book(nonfiction, "Head First Java"));
-		bookRepo.save(new Book(fiction, "Fullmetal Alchemist"));
+		Author firstAuthor = authorRepo.save(new Author("Big", "McLargeHuge"));
+		Author secondAuthor = authorRepo.save(new Author("Boaty", "McBoatface"));
+
+		bookRepo.save(new Book(nonfiction, "Head First Java", firstAuthor));
+		bookRepo.save(new Book(fiction, "Fullmetal Alchemist", firstAuthor, secondAuthor));
 	}
 
 }
