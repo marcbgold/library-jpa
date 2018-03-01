@@ -1,40 +1,46 @@
 package org.wecancodeit.libraryjpa;
 
-import java.util.Collection;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Genre {
+public class Book {
 
 	@Id
 	@GeneratedValue
 	private long id;
-	private String genre;
 
-	@OneToMany(mappedBy = "genre")
-	Collection<Book> books;
+	@ManyToOne
+	private Genre genre;
+	// private Author author;
 
-	public Genre() {
+	private String title;
+
+	public Book() {
 	}
 
-	public Genre(String genre) {
+	public Book(Genre genre, String title) { // , String author) {
 		this.genre = genre;
+		this.title = title;
+		// this.author = author;
 	}
 
 	public long getId() {
 		return id;
 	}
 
-	public String getGenre() {
+	public Genre getGenre() {
 		return genre;
 	}
 
-	public Collection<Book> getBooks() {
-		return books;
+	// public String getAuthor() {
+	// return author;
+	// }
+
+	public String getTitle() {
+		return title;
 	}
 
 	@Override
@@ -52,6 +58,7 @@ public class Genre {
 			return false;
 		}
 
-		return id == ((Genre) obj).id;
+		return id == ((Book) obj).id;
 	}
+
 }
